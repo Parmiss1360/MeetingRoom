@@ -1,0 +1,105 @@
+﻿<!--  Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license.
+        See LICENSE in the source repository root for complete license information. -->
+
+
+@model ReflectionIT.Mvc.Paging.PagingList<MettingRoom.Model.Events>
+@using ReflectionIT.Mvc.Paging;
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Admin_.cshtml";
+}
+
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <br />
+
+
+    <p>Choose <b>Sign in</b> at the top of the page and sign in with your work or school account.</p>
+}
+@if (User.Identity.IsAuthenticated)
+{
+
+
+    <div id="modal-placeholder"></div>
+
+
+
+
+
+
+
+
+    <h2><span style=" text-align:center justify"> @DateTime.Now.ToShortDateString()</span></h2>
+
+
+    <div id="notification" data-url="@Url.Action("Notification")"></div>
+
+
+    <div class="card-group">
+        <div class="card">
+
+            <h5 class="card-header" style="direction:ltr ;text-align:left   ">
+                Location : -Xrsrc Linköping Meetingroom XLENT Linköping
+                <br />
+
+
+            </h5>
+            <div class="card-body">
+
+
+
+                <input id="isfull" value="@ViewBag.IsFull" type="hidden" class="form-control" placeholder="موجودی">
+
+                <div id="content">
+                    @if (Model != null)
+                    {@await Html.PartialAsync("_Meeting", Model)}
+
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="container badge-pill" style="text-align:center">
+
+
+                <button class="btn btn-success btn-icon" data-toggle="ajax-modal" data-url="@Url.Action("Create", "Home")" id="btn">
+                    <i class="fa fa-plus text-white " style="font-size:55px;color:lightgreen">
+                        Booking
+                    </i>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+
+}
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+
+    if($("#isfull").val()==1)
+    {
+    $(".card_Site").css({"background-color": "darkred"});
+
+    }
+
+    else
+    {
+       $(".card_Site").css({"background-color": "forestgreen"});
+
+
+    }
+
+
+
+        });
+
+     $(".delete").click(function () { 
+    $("#bg-img").preloader();
+
+});
+</script>

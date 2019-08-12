@@ -1,0 +1,92 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+
+
+@model ReflectionIT.Mvc.Paging.PagingList<MettingRoom.Model.Events>
+@using ReflectionIT.Mvc.Paging;
+<table class="table table-hover" id="myTable" data-url="@Url.Action("Index")">
+
+    <thead>
+        <tr>
+
+
+            <th>
+                Attendees
+            </th>
+
+            <th>
+                Startdate
+            </th>
+
+            <th>
+                Enddate
+            </th>
+
+
+            <th class="text-center">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+          
+                foreach (var item in Model)
+                {
+                    var attendess = "";
+
+                    TimeZoneInfo timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("Romance Standard Time");
+
+                    DateTime newDateTime = TimeZoneInfo.ConvertTime(Convert.ToDateTime(item.Start.DateTime.ToString()), timeZoneInfo);
+
+                    DateTime EndDateTime = TimeZoneInfo.ConvertTime(Convert.ToDateTime(item.End.DateTime.ToString()), timeZoneInfo);
+
+                    <tr>
+
+
+                        @foreach (var item1 in item.Attendees)
+                        {
+
+                            attendess = attendess + "-" + item1.EmailAddress.Name;
+
+                        }
+                        <td>@attendess.Remove(0, 1)</td>
+                        <td>@newDateTime.TimeOfDay</td>
+                        <td>@EndDateTime.TimeOfDay</td>
+
+
+
+                        <td class="text-center">
+
+                            <a class="btn btn-danger btn-icon delete" asp-action="Delete" asp-route-Id="@item.Id">
+                                <i class="fa fa-desktop"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+          
+
+
+        }
+
+
+    </tbody>
+</table>
+
+
+<nav>
+    @await this.Component.InvokeAsync("Pager", new { PagingList = this.Model })
+</nav>
+
+                          
+
+<script type="text/javascript">
+
+
+
+     $(".delete").click(function () { 
+    $("#bg-img").preloader();
+
+});
+</script>
+

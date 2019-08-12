@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "md.bootstrappersiandatetimepicker": "3.5.0",
+    "select2": "4.0.7",
+    "jqueryui": "1.11.1",
+    "bootstrap-datetimepicker": "0.0.7",
+    "jquery-datetimepicker": "2.5.21"
+  }
+}
