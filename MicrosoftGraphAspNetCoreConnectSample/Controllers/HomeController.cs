@@ -35,33 +35,9 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
             _env = hostingEnvironment;
             _graphSdkHelper = graphSdkHelper;
 
-            //var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
+
+
         }
-
-
-        //[AllowAnonymous]
-        //public async Task<IActionResult> Index1(string email)
-        //{
-        //    if (User.Identity.IsAuthenticated)
-        //    {
-        //        // Get users's email.
-        //        email = email ?? User.FindFirst("preferred_username")?.Value;
-        //        ViewData["Email"] = email;
-
-        //        // Initialize the GraphServiceClient.
-        //        var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
-
-        //        ViewData["Response"] = await GraphService.GetUserJson(graphClient, email, HttpContext);
-
-        //        ViewData["Picture"] = await GraphService.GetPictureBase64(graphClient, email, HttpContext);
-
-               
-
-
-        //    }
-
-        //    return View();
-        //}
         [AllowAnonymous]
         // Load user's profile.
         public async Task<IActionResult> Index( int page = 1, int row = 10)
@@ -73,7 +49,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
                  graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
 
 
-                 // var events = GraphService.GetEvents(graphClient);
+            
                         var events = await graphClient.Me.Events
               .Request().Top(100)
               .Header("Prefer", "outlook.timezone=\"W. Europe Standard Time\"")
