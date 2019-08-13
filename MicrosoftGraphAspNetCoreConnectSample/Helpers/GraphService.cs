@@ -40,11 +40,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Helpers
                            e.End,
                            e.Location,
                            e.Id
-                                //Attendees = e.Attendees
-                                //,Location=e.Location,
-                                // Start=e.Start,
-                                // End=e.End
-
+                        
                             }
 
                            )

@@ -73,30 +73,29 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
                  graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
 
 
-         // var events = GraphService.GetEvents(graphClient);
-                var events = await graphClient.Me.Events
-      .Request().Top(100)
-      .Header("Prefer", "outlook.timezone=\"W. Europe Standard Time\"")
-      .Select(e => new
-      {
-          e.Subject,
-          e.Body,
-          e.BodyPreview,
-          e.Organizer,
-          e.Attendees,
-          e.Start,
-          e.End,
-          e.Location,
-          e.Id
+                 // var events = GraphService.GetEvents(graphClient);
+                        var events = await graphClient.Me.Events
+              .Request().Top(100)
+              .Header("Prefer", "outlook.timezone=\"W. Europe Standard Time\"")
+              .Select(e => new
+              {
+                  e.Subject,
+                  e.Body,
+                  e.BodyPreview,
+                  e.Organizer,
+                  e.Attendees,
+                  e.Start,
+                  e.End,
+                  e.Location,
+                  e.Id
 
-      })
-      .GetAsync();
+              })
+              .GetAsync();
 
 
                 string Datenow = System.DateTime.Now.Date.ToShortDateString();
 
                 var _events = events.Where(e => e.Location.DisplayName != "" && e.Start.DateTime.Split('T')[0].ToString() == Datenow
-
                
                 ).Select(e => new Events { Attendees = e.Attendees, Start = e.Start, End = e.End, IsFull = false ,Id=e.Id }).ToList();
 
@@ -105,11 +104,6 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
              || Convert.ToDateTime(e.End.DateTime.Split('T')[1].ToString()).TimeOfDay >= DateTime.Now.TimeOfDay)).ToList();
                 var model = PagingList.Create(li, row, page);
 
-
-                // var li = list.Where(p => p.Startdate >= DateTime.Now || p.Enddate >= DateTime.Now);
-
-             
-                
                 var m = li.Min(P => P.Start.DateTime);
 
                 Events test = li.Select(a=>new Events { Start=a.Start, End=a.End})
@@ -138,29 +132,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
         }
 
         
-        // Send an email message from the current user.
-        //public async Task<IActionResult> SendEmail(string recipients)
-        //{
-            
-
-        //    try
-        //    {
-        //        // Initialize the GraphServiceClient.
-        //        var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
-
-        //        // Send the email.
-        //        await GraphService.SendEmail(graphClient, _env, recipients, HttpContext);
-
-        //        // Reset the current user's email address and the status to display when the page reloads.
-        //        TempData["Message"] = "Success! Your mail was sent.";
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch (ServiceException se)
-        //    {
-        //        if (se.Error.Code == "Caller needs to authenticate.") return new EmptyResult();
-        //        return RedirectToAction("Error", "Home", new { message = "Error: " + se.Error.Message });
-        //    }
-        //}
+       
 
         public IActionResult Notification()
         {
@@ -211,7 +183,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
 
                 // Send the email.
 
-                var error = GetErrors(@event);
+                 GetErrors(@event);
                 if (ModelState.IsValid)
                 {
                     await GraphService.CreateEvents(graphClient, @event);
@@ -229,7 +201,7 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
                 else
                 {
                     ViewBag.errors = "1";
-                    ViewBag.Error = error;
+                    ViewBag.Error = "";
                     return PartialView("_Create");
                 }
                     return PartialView("_Create",@event);
@@ -243,24 +215,26 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
         }
      
 
-        private List<string> GetErrors(Events @event)
+        private void GetErrors(Events @event)
         {
 
-            List<string> errorlist = new List<string>();
             var graphClient = _graphSdkHelper.GetAuthenticatedClient((ClaimsIdentity)User.Identity);
 
-            var events = GraphService.GetEvents(graphClient);
+            var events = GraphService.GetEvents(graphClient).Result.Select(a => new Events { Start = a.Start, End = a.End 
 
-            var checklist = events.Result.Where(e => Convert.ToDateTime(e.Start.DateTime) <= Convert.ToDateTime(@event.Start.DateTime) &&
+            });
+           
+            var checklist = events.Where(e => Convert.ToDateTime(e.Start.DateTime) <= Convert.ToDateTime(@event.Start.DateTime) &&
 
-             Convert.ToDateTime(e.End.DateTime) >= Convert.ToDateTime(@event.Start.DateTime)
+             Convert.ToDateTime(e.End.DateTime) >= Convert.ToDateTime(@event.Start.DateTime) ||
 
-             &&
-              Convert.ToDateTime(e.Start.DateTime) <= Convert.ToDateTime(@event.End.DateTime) &&
+            
+             ( Convert.ToDateTime(e.Start.DateTime) <= Convert.ToDateTime(@event.End.DateTime) &&
 
-             Convert.ToDateTime(e.End.DateTime) >= Convert.ToDateTime(@event.End.DateTime)
+             Convert.ToDateTime(e.End.DateTime) >= Convert.ToDateTime(@event.End.DateTime))
 
-            );
+            ).ToList().Count();
+
 
             if(Convert.ToDateTime(@event.Start.DateTime) >= Convert.ToDateTime(@event.End.DateTime))
             {
@@ -269,8 +243,13 @@ namespace MicrosoftGraphAspNetCoreConnectSample.Controllers
                 ModelState.AddModelError(string.Empty, "det kan inte vara EndTid mindre en start tid");
                
             }
-            return errorlist;
-}
+            if(checklist>0)
+            {
+                ModelState.AddModelError(string.Empty, "Nu finns redan en möte I konferensrummet , försök på en annan tid");
+
+            }
+
+        }
 
 
         public async Task <IActionResult> Delete( string Id)

@@ -34,7 +34,9 @@
 
                     <div class="form-group ">
                         <label asp-for="Start.TimeZone" class="control-label">Startdate</label>
-                        <input id="basic_example_1" asp-for="Start.DateTime" class="form-control ">
+                        <input id="basic_example_1" asp-for="Start.DateTime" class="form-control " >
+                       
+
                         <span asp-validation-for="Start.TimeZone" class="text-danger"></span>
                     </div>
 
@@ -85,19 +87,27 @@
     $(function () {
   $('#example').datetimepicker();
 });
-      var d1 = new Date (),
+      var d1 = new Date ();
     d2 = new Date ( d1 );
-d2.setMinutes ( d1.getMinutes() + 30 );
+    d2.setMinutes ( d1.getMinutes() + 30 );
 
-    $('#basic_example_1').datetimepicker();
-     $('#basic_example_2').datetimepicker();
+    $('#basic_example_1').datetimepicker({
+               sideBySide: true
+            });
+     $('#basic_example_2').datetimepicker({
+               sideBySide: true
+            });
      $("#basic_example_1").data("DateTimePicker").date(new Date());
      $("#basic_example_2").data("DateTimePicker").date(d2);
 
 
+          $("#basic_example_1").on( "dp.change", function() {
 
-
-
+     var startdate = Date.parse($('#basic_example_1').val());
+     d3 = new Date ( startdate );
+     d3.setMinutes (d3.getMinutes()+60 );
+     $("#basic_example_2").data("DateTimePicker").date(d3);
+})
 
 </script>
 
