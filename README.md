@@ -1,8 +1,4 @@
-# Microsoft Graph Connect Sample for ASP.NET Core 2.1
-
-![Microsoft Graph Connect Sample for ASP.NET Core 2.1 screenshot](readme-images/Page1.PNG)
-
-**Scenario**: Use ASP.NET Core 2.1 MVC to connect to Microsoft Graph using the delegated permissions flow to retrieve a user's profile, their photo from Azure AD (v2.0) endpoint and then send an email that contains the photo as attachment.
+nd then send an email that contains the photo as attachment.
 
 The sample uses OpenID Connect for sign in, [Microsoft Authentication Library (MSAL) for .NET](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet) to obtain an access token, and the [Microsoft Graph Client Library for .NET](https://github.com/microsoftgraph/msgraph-sdk-dotnet) (SDK) to interact with Microsoft Graph. The MSAL SDK provides features for working with the [Azure AD v2.0 endpoint](https://azure.microsoft.com/en-us/documentation/articles/active-directory-appmodel-v2-overview), which enables developers to write a single code flow that handles authentication for both work or school (Azure Active Directory) and personal (Microsoft) accounts.
 The sample uses only delegate permissions, therefore it does not require admin consent.
